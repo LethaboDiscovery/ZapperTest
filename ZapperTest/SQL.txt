@@ -1,0 +1,45 @@
+﻿
+CREATE TABLE Customers (
+    CustomerId UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
+    FirstName NVARCHAR(100) NOT NULL,
+    LastName NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(255) UNIQUE NOT NULL,
+    PhoneNumber NVARCHAR(50) NULL,
+    DateCreated DATETIME2 DEFAULT GETDATE(),
+    DateModified DATETIME2 DEFAULT GETDATE()
+);
+
+CREATE TABLE Merchants (
+    MerchantId UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
+    MerchantName NVARCHAR(255) NOT NULL,
+    ContactEmail NVARCHAR(255) UNIQUE NOT NULL,
+    ContactPhone NVARCHAR(50) NULL,
+    Address NVARCHAR(500) NULL,
+    DateCreated DATETIME2 DEFAULT GETDATE()
+);
+
+CREATE TABLE Statuses (
+    StatusId INT IDENTITY(1,1) PRIMARY KEY,
+    StatusName NVARCHAR(50) UNIQUE NOT NULL
+);
+
+INSERT INTO Statuses (StatusName)
+VALUES 
+('Pending'),
+('Completed'),
+('Cancelled'),
+('Failed');
+
+CREATE TABLE Transactions (
+    TransactionId UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
+    CustomerId UNIQUEIDENTIFIER NOT NULL,
+    MerchantId UNIQUEIDENTIFIER NOT NULL,
+    TransactionDate DATETIME2 DEFAULT GETDATE(),
+    Amount DECIMAL(18, 2) NOT NULL,
+    PaymentMethod NVARCHAR(50) NOT NULL,
+    StatusId INT NOT NULL,
+    DateCreated DATETIME2 DEFAULT GETDATE(),
+    FOREIGN KEY (CustomerId) REFERENCES Customers(CustomerId),
+    FOREIGN KEY (MerchantId) REFERENCES Merchants(MerchantId),
+    FOREIGN KEY (StatusId) REFERENCES Statuses(StatusId)
+);
